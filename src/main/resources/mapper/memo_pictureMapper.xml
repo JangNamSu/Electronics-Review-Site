@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.human.dao.IF_MemoPictureDAO">
+
+	<insert id="picInsert" parameterType="hashmap"> <!-- 게시글 사진 삽입 -->
+		insert into memo_picture values(#{num},#{pname})
+	</insert>
+
+	<select id="memoNumPic" parameterType="int" resultType="String"> <!-- 게시글 사진 조회 -->
+		select m_pic from memo_picture where m_num = #{num}
+	</select>
+	
+	<delete id="delPic" parameterType="String">
+		delete from memo_picture where m_pic= #{delPic} <!-- 게시글  수정시 사진 삭제 -->
+	</delete>
+
+	<delete id="MemoNumdelPic" parameterType="int"> <!-- 해당 게시글 모든 사진 삭제 -->
+		delete from memo_picture where m_num= #{num}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.human.dao.IF_M_CommentDAO">
+
+	<insert id="commentAdd" parameterType="com.human.VO.M_CommentVO"> <!-- 댓글 작성 -->
+		insert into m_comment values(#{m_num},#{m_id},default,#{m_c_con},m_comment_sequence.nextval)
+	</insert>
+	
+	<select id="selectAll" parameterType="int" resultType="com.human.VO.M_CommentVO"> <!-- 모든 댓글 가져오기 -->
+		select * from m_comment where m_num = #{num} order by m_c_date
+	</select>
+
+	<delete id="commentDel" parameterType="int"> <!-- 댓글 삭제하기 -->
+		delete from m_comment where m_c_num = #{delComment}
+	</delete>
+	
+	<update id="commentMod" parameterType="hashmap"> <!-- 댓글 수정하기 -->
+		update m_comment set m_c_con = #{modComment} where m_c_num = #{m_c_num}
+	</update>
+	
+	<delete id="selMemoCommentDel" parameterType="int"> <!-- 해당 게시글 댓글 삭제하기 -->
+		delete from m_comment where m_num = #{num} 
+	</delete>
+	
+	<delete id="myCommentAllDel" parameterType="String"> <!-- 나의 모든 댓글 지우기(회원탈퇴) -->
+		delete from m_comment where m_id= #{id}
+	</delete>
+	
+</mapper>

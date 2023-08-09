@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.human.dao.IF_M_likeDAO">
+
+	<!--추천하면  테이블에 튜플추가 -->
+	<insert id="likeAdd" parameterType="com.human.VO.M_likeVO"> 
+ 		insert into m_like values (#{m_num}, #{m_id},m_like_sequence.nextval)
+	</insert>
+	
+	<!--추천했는지 체크 후 리턴값 반환 -->
+	<select id="likeChk" parameterType="com.human.VO.M_likeVO" resultType="int">  
+		select count(*) from m_like where m_num = #{m_num} and m_id = #{m_id}
+	</select>
+	
+	<!--추천안했을때 추천하면 실행 -->
+<!-- 	<update id="likeChkCancel" parameterType="com.human.VO.M_likeVO">  -->
+<!-- 		update m_like set like_check=1 where m_num = #{m_num} and m_id = #{m_id} -->
+<!--  	</update> -->
+ 	
+	<!-- 추천한 게시글 한번더 추천시 튜플삭제 -->
+	<delete id="likeDel" parameterType="com.human.VO.M_likeVO"> 
+		delete from m_like where m_num = #{m_num} and m_id = #{m_id}
+	</delete>
+		
+	
+	<!-- 추천하면  테이블에 튜플추가 -->
+<!-- 	<insert id="likeAdd" parameterType="com.human.VO.M_likeVO">  -->
+<!-- 		insert into m_like values (#{m_num}, #{m_id}, default) -->
+<!-- 	</insert> -->
+	<!--추천했는지 체크 후 리턴값 반환 -->
+<!-- 	<select id="likeChk" parameterType="com.human.VO.M_likeVO" resultType="int">   -->
+<!-- 		select count(*) from m_like where m_num = #{m_num} and like_check = #{like_check} and m_id = #{m_id} -->
+<!-- 	</select> -->
+	
+	<!--추천했을때 추천한번더하면 실행 -->
+<!-- 	<update id="likeChkCancel" parameterType="com.human.VO.M_likeVO">  -->
+<!-- 		update m_like set like_check=1 where m_num = #{m_num} and m_id = #{m_id}  -->
+<!-- 	</update> -->
+	<!--추천한번더 했을 시 추천취소 튜플삭제 -->
+<!-- 	<delete id="likeDel" parameterType="com.human.VO.M_likeVO">  -->
+<!-- 		delete from m_like where m_num = #{m_num} and m_id = #{m_id} and like_check = 1 -->
+<!-- 	</delete> -->
+	
+</mapper>

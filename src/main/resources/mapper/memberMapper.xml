@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.human.dao.IF_MemberDAO">
+
+	<insert id="insert" parameterType="com.human.VO.MemberVO"> <!-- 회원가입 -->
+		<choose>
+			<when test="m_pro == null"> <!-- 프로필 사진이 null값이면 -->
+				insert into member values
+				(#{m_id},#{m_name},#{m_pass},#{m_pro, jdbcType=VARCHAR},default,default)
+			</when>
+			<otherwise> <!-- 프로필 사진이 null값이 아니라면 -->
+				insert into member values
+				(#{m_id},#{m_name},#{m_pass},#{m_pro},default,default)
+			</otherwise>
+		</choose>
+	</insert>
+	
+	<select id="login" resultType="String" parameterType="hashmap"> <!-- 로그인 체크 -->
+		select * from member where m_id=#{id} and m_pass=#{pw}
+	</select>
+
+	<select id="m_pro" resultType="String" parameterType="String"> <!--회원 프로필 사진 정보 -->
+		select m_pro from member where m_id = #{id}
+	</select>
+	
+	<select id="myInfo" resultType="com.human.VO.MemberVO" parameterType="String"> <!-- 내 정보 보기 -->
+		select * from member where m_id= #{m_id}
+	</select>
+	
+	<update id="myInfoMod" parameterType="com.human.VO.MemberVO"> <!-- 내정보 수정하기 -->
+		update member set m_pass=#{m_pass}, m_pro=#{m_pro} where m_id= #{m_id}
+	</update>
+	
+	<update id="myInfoDel_m_pro" parameterType="String"> <!-- 내정보 수정하기 프로필사진 삭제 -->
+		update member set m_pro=null where m_id= #{id}
+	</update>
+	
+	<select id="allMemberInfo" resultType="com.human.VO.MemberVO"> <!-- 모든 회원 정보가져오기 -->
+		select * from member order by m_date desc
+	</select>
+	
+	<delete id="selMemberDel" parameterType="String"> <!-- 회원탈퇴 -->
+		delete from member where m_id= #{id}
+	</delete>
+	
+	<select id="checkId" parameterType="String" resultType="int"> <!-- 사용중인 아이디 체크 사용중이라면 리턴값 1반환 -->
+		select count(*) from member where m_id=#{id}
+	</select>
+
+</mapper>

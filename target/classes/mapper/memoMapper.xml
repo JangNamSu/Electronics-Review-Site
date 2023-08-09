@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.human.dao.IF_MemoDAO">
+
+	<insert id="insert" parameterType="com.human.VO.MemoVO">	<!-- 게시글 작성하기-->
+		insert into memo values 
+		(#{m_id},#{m_num},#{m_title},#{m_con},default,default,default,default)
+	</insert>
+	
+	<update id="updateCommentCnt"> <!-- 현재 게시물 댓글수 구하기 (게시글 전체리스트 구하기 보다 먼저 쿼리가 실행해야함) -->
+		update memo
+		set m_com_cnt = (select count(*) from  m_comment where memo.m_num = m_comment.m_num)
+	</update>
+
+	<select id="selectAll" resultType="com.human.VO.MemoVO"       
+	parameterType="com.human.VO.PageVO">	<!-- 게시글 전체리스트 구하기-->
+		select * from(select rownum as rcol, sub.*
+		from (select * from memo
+		<if test="search_word != null">
+			where m_title like '%'||#{search_word}||'%'
+		</if>
+		 order by m_num desc) sub)
+		where rcol between #{startNo} and #{endNo}
+	</select>
+	
+	<select id="datailView" resultType="com.human.VO.MemoVO" parameterType="int">	<!-- 게시글 자세히 보기 -->
+		select * from memo where m_num = #{num}
+	</select>
+
+	<select id="memoCount" resultType="int" parameterType="String">	<!-- 게시글 숫자 카운트 -->
+		select count(*) from memo
+		<if test="value != null">
+			where m_title like '%'||#{value}||'%'
+		</if>
+	</select>
+	
+	<update id="viewCntUpdate" parameterType="int"> <!-- 게시글 조회수 업데이트 -->
+		update memo set m_view_cnt=m_view_cnt+1 where m_num= #{num} 
+	</update>
+	
+	<select id="memoWriteId" resultType="String" parameterType="int"> <!-- 작성자 아이디 구하기 -->
+		select m_id from memo where m_num = #{num}
+	</select>
+	
+	<select id="memoNum" resultType="int"> <!-- 게시글 씨퀀스 번호 구하기 -->
+		select memo_sequence.nextval from dual
+	</select>
+	
+	<select id="myMemoSelect" resultType="com.human.VO.MemoVO" parameterType="String"> <!-- 나의 게시글 리스트 보기 -->
+		select * from memo where m_id = #{nowUser} order by m_num desc
+	</select>
+	
+	<update id="myMemoMod" parameterType="com.human.VO.MemoVO">
+		update memo set m_title= #{m_title} ,m_con = #{m_con} where m_num = #{m_num} <!-- 내 게시물 수정 업데이트 -->
+	</update>
+	
+	<delete id="myMemoDel" parameterType="int"> <!-- 내 게시물 삭제하기 -->
+		delete from memo where m_num = #{num}
+	</delete>
+	
+	<delete id="myMemoAllDel" parameterType="String"> <!-- 내 모든 게시물 삭제하기  // (회원탈퇴)-->
+		delete from memo where m_id = #{id}
+	</delete>
+	
+	<update id="memoLike" parameterType="int"> <!--  추천 +1 -->
+		update memo set m_like=m_like+1 where m_num = #{num}
+	</update>
+	
+	<update id="memoLikeDel" parameterType="int"> <!--  추천 -1 -->
+		update memo set m_like=m_like-1 where m_num = #{num}
+	</update>
+
+</mapper>
